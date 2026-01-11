@@ -18,11 +18,18 @@ def download():
     video_url = request.form.get('url')
     format_type = request.form.get('format')
     
-    # yt-dlp ayarları
+    # YouTube bot engelini aşmak ve düzgün indirme yapmak için ayarlar
     ydl_opts = {
         'outtmpl': f'{DOWNLOAD_FOLDER}/%(title)s.%(ext)s',
         'quiet': True,
         'no_warnings': True,
+        'format_sort': ['ext:mp4:m4a'],
+        'http_headers': {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            'Accept-Language': 'en-us,en;q=0.5',
+            'Sec-Fetch-Mode': 'navigate',
+        }
     }
 
     if format_type == 'mp3':
@@ -40,15 +47,15 @@ def download():
 
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            # Önce bilgi çek, sonra indir
+            # Video bilgilerini al ve indir
             info = ydl.extract_info(video_url, download=True)
             filename = ydl.prepare_filename(info)
             
-            # MP3 ise uzantıyı garantiye al
+            # MP3 ise uzantıyı düzelt
             if format_type == 'mp3':
                 filename = os.path.splitext(filename)[0] + '.mp3'
             
-            # Dosyayı kullanıcıya gönder ve sunucudan temizle (opsiyonel ama güvenli)
+            # Dosyayı kullanıcıya gönder
             return send_file(filename, as_attachment=True)
             
     except Exception as e:
@@ -56,6 +63,6 @@ def download():
         return f"Dönüştürme sırasında bir hata oluştu: {str(e)}", 500
 
 if __name__ == '__main__':
-    # Render'ın atadığı portu kullan, yoksa 10000 kullan
+    # Render'ın atadığı portu kullan
     port = int(os.environ.get("PORT", 10000))
     app.run(host='0.0.0.0', port=port)
