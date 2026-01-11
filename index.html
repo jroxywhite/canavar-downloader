@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UltraDownloader | YouTube Video & MP3</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body {
+            background: radial-gradient(circle at top center, #1e293b 0%, #0f172a 100%);
+            min-height: 100vh;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .gradient-text {
+            background: linear-gradient(90deg, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .download-btn {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+        }
+    </style>
+</head>
+<body class="text-slate-200">
+
+    <div class="container mx-auto px-4 py-20">
+        <div class="text-center mb-16">
+            <h1 class="text-6xl font-black mb-4 gradient-text tracking-tighter">
+                ULTRA DOWNLOADER
+            </h1>
+            <p class="text-slate-400 text-lg">YouTube videolarını saniyeler içinde ışık hızında dönüştürün.</p>
+        </div>
+
+        <div class="max-w-3xl mx-auto glass rounded-3xl p-8 shadow-2xl">
+            <form action="/download" method="POST" class="space-y-6" id="dlForm">
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <i class="fas fa-link text-slate-500"></i>
+                    </div>
+                    <input type="text" name="url" required
+                        class="block w-full pl-12 pr-4 py-5 bg-slate-900/50 border border-slate-700 rounded-2xl focus:ring-2 focus:ring-sky-500 focus:border-transparent outline-none transition-all text-white placeholder-slate-500"
+                        placeholder="Video linkini buraya yapıştırın (örn: https://youtube.com/...)">
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="relative">
+                        <select name="format" class="block w-full px-4 py-4 bg-slate-900/50 border border-slate-700 rounded-2xl focus:ring-2 focus:ring-sky-500 outline-none appearance-none text-white cursor-pointer">
+                            <option value="mp4">🎬 Video (En Yüksek MP4)</option>
+                            <option value="mp3">🎵 Ses (Ultra Kalite MP3)</option>
+                        </select>
+                        <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-slate-500">
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="submitBtn"
+                        class="download-btn bg-sky-500 hover:bg-sky-400 text-white font-bold py-4 px-8 rounded-2xl flex items-center justify-center gap-3 text-lg">
+                        <i class="fas fa-bolt"></i>
+                        <span>DÖNÜŞTÜRÜCÜYÜ ÇALIŞTIR</span>
+                    </button>
+                </div>
+            </form>
+
+            <div id="status" class="hidden mt-8 text-center animate-pulse">
+                <div class="inline-flex items-center gap-3 text-sky-400">
+                    <svg class="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                    Sunucu üzerinde işlem yapılıyor, lütfen bekleyin...
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mt-20 max-w-5xl mx-auto">
+            <div class="glass p-6 rounded-2xl text-center">
+                <i class="fas fa-rocket text-3xl text-sky-400 mb-4"></i>
+                <h3 class="font-bold mb-2">Işık Hızı</h3>
+                <p class="text-sm text-slate-400">Sunucu tabanlı işleme ile en hızlı indirme deneyimi.</p>
+            </div>
+            <div class="glass p-6 rounded-2xl text-center">
+                <i class="fas fa-shield-halved text-3xl text-indigo-400 mb-4"></i>
+                <h3 class="font-bold mb-2">Güvenli</h3>
+                <p class="text-sm text-slate-400">Verileriniz kaydedilmez, her işlem anonimdir.</p>
+            </div>
+            <div class="glass p-6 rounded-2xl text-center">
+                <i class="fas fa-infinity text-3xl text-purple-400 mb-4"></i>
+                <h3 class="font-bold mb-2">Sınırsız</h3>
+                <p class="text-sm text-slate-400">Dilediğiniz kadar video ve ses dosyasını indirin.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('dlForm').onsubmit = function() {
+            document.getElementById('status').classList.remove('hidden');
+            document.getElementById('submitBtn').disabled = true;
+            document.getElementById('submitBtn').classList.add('opacity-50');
+        };
+    </script>
+</body>
+</html>

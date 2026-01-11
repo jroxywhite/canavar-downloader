@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: canavar-downloader
+    env: python
+    # Burada hem kütüphaneleri yüklüyoruz hem FFmpeg'i kontrol ediyoruz
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    plan: free
+    region: oregon
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10.0
