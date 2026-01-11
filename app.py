@@ -4,8 +4,8 @@ import os
 
 app = Flask(__name__)
 
-# İndirilen dosyaların geçici olarak tutulacağı yer
-DOWNLOAD_FOLDER = 'downloads'
+# Render/Linux ortamı için en güvenli yazma alanı
+DOWNLOAD_FOLDER = '/tmp/downloads'
 if not os.path.exists(DOWNLOAD_FOLDER):
     os.makedirs(DOWNLOAD_FOLDER)
 
@@ -35,23 +35,27 @@ def download():
             }],
         })
     else:
-        # En yüksek kalite MP4 kombinasyonu
+        # En uyumlu MP4 formatı
         ydl_opts['format'] = 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best'
 
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            # Önce bilgi çek, sonra indir
             info = ydl.extract_info(video_url, download=True)
             filename = ydl.prepare_filename(info)
             
-            # MP3 dönüşümü sonrası dosya adını güncelle
+            # MP3 ise uzantıyı garantiye al
             if format_type == 'mp3':
                 filename = os.path.splitext(filename)[0] + '.mp3'
             
-            # Dosyayı kullanıcıya gönder
+            # Dosyayı kullanıcıya gönder ve sunucudan temizle (opsiyonel ama güvenli)
             return send_file(filename, as_attachment=True)
             
     except Exception as e:
-        return f"Hata oluştu: {str(e)}", 500
+        print(f"KRİTİK HATA: {str(e)}")
+        return f"Dönüştürme sırasında bir hata oluştu: {str(e)}", 500
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    # Render'ın atadığı portu kullan, yoksa 10000 kullan
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host='0.0.0.0', port=port)
